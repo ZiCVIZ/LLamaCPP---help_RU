@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>llama-server.exe b9541 — ПОЛНЫЙ справочник параметров</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #0a0c10;
+            color: #e4e6eb;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .container { max-width: 1800px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, #151b24, #0e1219);
+            border-radius: 28px;
+            padding: 24px 32px;
+            margin-bottom: 32px;
+            border: 1px solid #2a333f;
+        }
+        h1 {
+            margin: 0 0 8px;
+            font-weight: 600;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .version-badge {
+            background: #1e2a36;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #7aa2f7;
+        }
+        .search-box { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        #searchInput {
+            flex: 1;
+            min-width: 300px;
+            background: #11161f;
+            border: 1px solid #2d3748;
+            border-radius: 48px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            color: #f0f3f8;
+            outline: none;
+        }
+        #searchInput:focus { border-color: #3b82f6; }
+        .clear-search, .toggle-all-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 48px;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #cbd5e6;
+            font-size: 0.9rem;
+        }
+        .clear-search:hover, .toggle-all-btn:hover { background: #2d3a4e; }
+        .search-counter {
+            background: #1e2a36;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #6ee7b7;
+        }
+        .group-card {
+            background: #0f1219;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #202632;
+            overflow: hidden;
+        }
+        .group-header {
+            background: #131a24;
+            padding: 16px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222a34;
+            user-select: none;
+        }
+        .group-header h2 { margin: 0; font-size: 1.5rem; }
+        .group-header .param-count {
+            background: #1e2a36;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-left: 12px;
+        }
+        .toggle-icon { font-size: 1.6rem; transition: transform 0.2s; }
+        .group-header.collapsed .toggle-icon { transform: rotate(-90deg); }
+        .group-content.collapsed { display: none; }
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .param-table th {
+            text-align: left;
+            padding: 14px 12px;
+            background: #0b1017;
+            color: #b9c7da;
+            border-bottom: 1px solid #253040;
+        }
+        .param-table td {
+            padding: 12px;
+            border-bottom: 1px solid #1e2530;
+            vertical-align: top;
+            background-color: #0f131c;
+        }
+        .param-table tr:hover td { background-color: #18212e; }
+        .param-name {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            color: #facc15;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .param-aliases {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: block;
+        }
+        .default-value {
+            font-family: monospace;
+            color: #6ee7b7;
+            background: #1a2a2a;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+        .env-var {
+            font-family: monospace;
+            color: #a78bfa;
+            background: #2a1a3a;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        .source-link { font-size: 0.7rem; margin-top: 6px; color: #8ba0bc; }
+        .source-link a { color: #7aa2f7; text-decoration: none; }
+        .source-link a:hover { text-decoration: underline; }
+        .highlight { background-color: #3b4b5e !important; }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #5f6f87;
+            border-top: 1px solid #1f2937;
+            padding-top: 24px;
+        }
+        @media (max-width: 1000px) {
+            .param-table th, .param-table td { white-space: normal; word-break: break-word; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>llama-server.exe <span style="font-weight:normal">b9541 — справочник</span></h1>
+        <div class="version-badge">все параметры из официального README</div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск по флагам, типам, описанию, env-переменным">
+            <button class="clear-search" id="clearSearchBtn">✖ Сброс</button>
+            <button class="toggle-all-btn" id="expandAllBtn">▼ Развернуть всё</button>
+            <button class="toggle-all-btn" id="collapseAllBtn">▲ Свернуть всё</button>
+            <div class="search-counter" id="searchCounter">Всего параметров: 0</div>
+        </div>
+        <div style="margin-top: 10px; font-size:0.85rem;">
+            ✔ Все описания взяты из <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" target="_blank" style="color:#7aa2f7;">официального README llama.cpp server</a><br>
+            ✔ Поиск автоматически разворачивает группы с найденными результатами<br>
+            ✔ Используйте на свой страх и риск ;)
+        </div>
+    </div>
+    <div id="groups-container"></div>
+    <footer>Источник: <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" target="_blank" style="color:#7aa2f7;">официальный README сервера llama.cpp</a>. Только факты.
+        <div> На нейрослопано Qwen3.7-Plus под чутким руководством ZiCViZ с синдромом самозванца.</div>
+    </footer>
+</div>
+<script>
+    const PARAM_GROUPS = [
+        { name: "ℹ️ Информационные и общие параметры", collapsed: false,
+          params: [
+            { flag: "-h, --help, --usage", type: "действие", default: "—", desc: "Вывести справку по всем параметрам командной строки и завершить работу. Полезно для быстрого ознакомления с доступными опциями. Все три флага (-h, --help, --usage) являются алиасами и делают одно и то же.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--version", type: "действие", default: "—", desc: "Показать версию llama-server и информацию о сборке: номер коммита, компилятор, флаги оптимизации, поддержка CUDA/Metal/Vulkan, включённые функции. Полезно для отчётов об ошибках.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-cl, --cache-list", type: "действие", default: "—", desc: "Показать список моделей, сохранённых в системном кэше (обычно ~/.cache/llama.cpp/ или %LOCALAPPDATA%\\llama.cpp на Windows). Полезно для проверки, какие GGUF-файлы уже загружены и доступны без повторного скачивания.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--completion-bash", type: "действие", default: "—", desc: "Сгенерировать скрипт автодополнения для оболочки bash. Вывод можно перенаправить в файл и подключить через source, чтобы получить подсказки по параметрам llama-server при нажатии Tab. Пример: llama-server --completion-bash > ~/.llama-completion.bash && source ~/.llama-completion.bash", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--list-devices", type: "действие", default: "—", desc: "Вывести список всех доступных вычислительных устройств (GPU, CPU backend) с их индексами и завершить работу. Помогает определить правильные идентификаторы устройств для параметра --device. Показывает CUDA devices, Vulkan devices, Metal devices и т.д.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🧵 Параметры потоков и CPU", collapsed: false,
+          params: [
+            { flag: "-t, --threads N", type: "число", default: "-1 (авто)", desc: "Количество CPU-потоков, используемых для генерации токенов. При -1 используется количество логических ядер CPU. Увеличение может повысить производительность на CPU, но после определённого предела (обычно количество физических ядер) даёт минимальный эффект или даже замедляет из-за переключения контекста. Для GPU-инференса этот параметр влияет только на обработку промпта и некоторые CPU-операции.", env: "LLAMA_ARG_THREADS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-tb, --threads-batch N", type: "число", default: "значение --threads", desc: "Количество потоков, используемых при обработке батча и промпта (prompt processing). Можно выставить выше, чем --threads, так как обработка промпта хорошо параллелится и даёт линейное ускорение. Для GPU-инференса влияет на скорость обработки входного промпта.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-C, --cpu-mask M", type: "hex маска", default: "\"\"", desc: "Маска привязки CPU в формате hex (произвольной длины). Позволяет закрепить потоки на конкретных ядрах CPU. Дополняет параметр --cpu-range. Пример: --cpu-mask 0xff закрепит потоки на первых 8 ядрах. Полезно для NUMA-систем и изоляции нагрузки.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-Cr, --cpu-range lo-hi", type: "диапазон", default: "—", desc: "Диапазон CPU для привязки в формате lo-hi (например, 0-7). Дополняет параметр --cpu-mask. Более читаемая альтернатива hex-маске. Полезно для NUMA-систем.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--cpu-strict <0|1>", type: "0/1", default: "0", desc: "Строгая привязка потоков к указанным CPU (согласно маске --cpu-mask или диапазону --cpu-range). При значении 1 потоки не будут переключаться на другие ядра, что может улучшить производительность за счёт лучшего использования кэша CPU. При 0 (по умолчанию) привязка нестрогая.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--prio N", type: "число", default: "0", desc: "Приоритет процесса/потоков: low(-1), normal(0), medium(1), high(2), realtime(3). Высокий приоритет может улучшить время отклика, но повлияет на другие процессы в системе. Realtime(3) требует администраторских прав и может сделать систему нестабильной.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--poll <0..100>", type: "число", default: "50", desc: "Уровень опроса (polling) для ожидания работы. Более высокие значения уменьшают задержку при высокой нагрузке (потоки активно проверяют наличие работы), но увеличивают использование CPU в простое. Значение 0 отключает polling (потоки засыпают). Значение 100 — максимальный polling. Оптимально: 50 для баланса.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-Cb, --cpu-mask-batch M", type: "hex маска", default: "как --cpu-mask", desc: "Маска привязки CPU для батчей (batch processing). Позволяет отдельно настроить привязку для обработки промпта и генерации. Полезно для разделения нагрузки на NUMA-системах.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-Crb, --cpu-range-batch lo-hi", type: "диапазон", default: "—", desc: "Диапазон CPU для привязки батчей. Аналог --cpu-range, но для batch processing.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--cpu-strict-batch <0|1>", type: "0/1", default: "как --cpu-strict", desc: "Строгая привязка потоков для батчей. Аналог --cpu-strict, но для batch processing.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--prio-batch N", type: "число", default: "0", desc: "Приоритет для батчей: 0-normal, 1-medium, 2-high, 3-realtime. Аналог --prio, но для batch processing.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--poll-batch <0|1>", type: "0/1", default: "как --poll", desc: "Опрос для ожидания работы батчей. Аналог --poll, но для batch processing.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🎛️ Параметры модели и контекста", collapsed: false,
+          params: [
+            { flag: "-c, --ctx-size N", type: "число", default: "0 (из модели)", desc: "Размер контекстного окна в токенах — максимальное количество токенов, которые модель может одновременно обрабатывать (промпт + генерация). Значение 0 автоматически загружает размер из метаданных модели (обычно 2048, 4096 или 8192). Увеличение ctx-size повышает потребление RAM/VRAM линейно (примерно 2 байта на токен для f16 KV-кэша). Для длинных документов используйте 8192, 16384 или больше. Некоторые модели поддерживают RoPE-масштабирование для расширения контекста.", env: "LLAMA_ARG_CTX_SIZE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-n, --predict, --n-predict N", type: "число", default: "-1 (бесконечность)", desc: "Максимальное количество новых токенов, которые модель сгенерирует. При -1 генерация продолжается до естественной остановки (встречи токена EOS) или принудительного прерывания. Все три флага (-n, --predict, --n-predict) являются алиасами. Полезно для ограничения длины ответа в API.", env: "LLAMA_ARG_N_PREDICT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-b, --batch-size N", type: "число", default: "2048", desc: "Логический максимальный размер батча — количество токенов, обрабатываемых за одну итерацию при работе с промптом (prompt processing). Большие значения ускоряют начальную обработку промпта, но увеличивают пиковое потребление памяти. Оптимально: 512-2048 для GPU, 128-512 для CPU. Не влияет на скорость генерации (token generation).", env: "LLAMA_ARG_BATCH", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ub, --ubatch-size N", type: "число", default: "512", desc: "Физический максимальный размер батча — количество токенов, обрабатываемых моделью за один проход через граф вычислений. Обычно не требует изменения, но может быть уменьшен для экономии VRAM при больших моделях. Должен быть <= --batch-size. Оптимально: 128-512.", env: "LLAMA_ARG_UBATCH", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--keep N", type: "число", default: "0", desc: "Количество начальных токенов промпта, которые будут сохранены при сдвиге контекста (context shift). Полезно для сохранения системных инструкций или важного начального контекста при длительной генерации. Значение -1 сохраняет все токены. При 0 (по умолчанию) сдвиг контекста удаляет все старые токены.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--swa-full", type: "флаг", default: "false", desc: "Использовать полноразмерный SWA-кэш (Sliding Window Attention). Включает режим, при котором кэш внимания не ограничивается окном, а хранит все токены. Полезно для некоторых архитектур моделей (Mistral, Mixtral), которые используют sliding window attention. Увеличивает потребление памяти, но может улучшить качество для длинных контекстов.", env: "LLAMA_ARG_SWA_FULL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-fa, --flash-attn [on|off|auto]", type: "выбор", default: "auto", desc: "Flash Attention — оптимизированная реализация механизма внимания, которая значительно снижает использование памяти (примерно в 2-4 раза) и ускоряет вычисления на GPU (особенно для длинных контекстов >4096 токенов). Всегда рекомендуется включать ('on'), если ваша сборка поддерживает CUDA и GPU имеет compute capability >= 8.0 (Ampere и новее). 'auto' автоматически включает, если поддерживается.", env: "LLAMA_ARG_FLASH_ATTN", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--perf, --no-perf", type: "флаг", default: "false", desc: "Включить внутренние замеры производительности libllama (время загрузки модели, время инференса, скорость токенов/сек и т.д.). Полезно для бенчмаркинга и отладки производительности. При --no-perf замеры отключены (немного быстрее).", env: "LLAMA_ARG_PERF", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-e, --escape, --no-escape", type: "флаг", default: "true", desc: "Обрабатывать escape-последовательности в промпте: \\n (новая строка), \\r (возврат каретки), \\t (табуляция), \\' (одинарная кавычка), \\\" (двойная кавычка), \\\\ (обратный слэш). При --no-escape последовательности обрабатываются как обычный текст. Полезно для передачи многострочных промптов через командную строку.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🔄 RoPE и масштабирование контекста", collapsed: true,
+          params: [
+            { flag: "--rope-scaling {none,linear,yarn}", type: "выбор", default: "linear (если не указано моделью)", desc: "Метод масштабирования RoPE (Rotary Position Embedding) для увеличения эффективного контекстного окна. none — без масштабирования (используется оригинальный контекст модели). linear — линейное масштабирование частот (просто, но снижает качество на длинных контекстах). yarn — метод YaRN с нелинейной интерполяцией (лучшее качество, но медленнее). По умолчанию используется метод, указанный в метаданных модели.", env: "LLAMA_ARG_ROPE_SCALING_TYPE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--rope-scale N", type: "число", default: "не указано", desc: "Коэффициент масштабирования контекста RoPE. Умножает максимальную длину контекста на указанный коэффициент. Например, значение 2.0 расширит контекст с 4096 до 8192 токенов, 4.0 — до 16384. Работает только с --rope-scaling linear или yarn. Большие значения снижают качество генерации.", env: "LLAMA_ARG_ROPE_SCALE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--rope-freq-base N", type: "число", default: "из модели", desc: "Базовая частота RoPE (обычно 10000.0 для LLaMA). По умолчанию загружается из метаданных модели. Используется в NTK-масштабировании для адаптации позиционных кодировок. Изменение влияет на то, как модель интерпретирует позиции токенов. Редко требует изменения вручную.", env: "LLAMA_ARG_ROPE_FREQ_BASE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--rope-freq-scale N", type: "число", default: "не указано", desc: "Коэффициент масштабирования частоты RoPE. Обратно пропорционален расширению контекста: значение 0.5 уменьшит частоту, что эффективно расширит контекст в 2 раза. Альтернатива --rope-scale. Редко используется напрямую.", env: "LLAMA_ARG_ROPE_FREQ_SCALE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--yarn-orig-ctx N", type: "число", default: "0 (из модели)", desc: "YaRN: оригинальный размер контекста модели (на котором она обучалась). Используется для расчёта параметров масштабирования. По умолчанию загружается из метаданных модели. Редко требует изменения.", env: "LLAMA_ARG_YARN_ORIG_CTX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--yarn-ext-factor N", type: "число", default: "-1.00", desc: "YaRN: коэффициент смешивания экстраполяции. 0.0 = полная интерполяция (безопасно, но медленно), 1.0 = полная экстраполяция (быстро, но может быть нестабильно). Значение -1.00 использует автонастройку. Оптимально: 0.0-0.3 для длинных контекстов.", env: "LLAMA_ARG_YARN_EXT_FACTOR", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--yarn-attn-factor N", type: "число", default: "-1.00", desc: "YaRN: масштаб sqrt(t) или величины внимания. Контролирует, как масштабируется внимание при экстраполяции. Значение -1.00 использует автонастройку. Редко требует изменения.", env: "LLAMA_ARG_YARN_ATTN_FACTOR", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--yarn-beta-slow N", type: "число", default: "-1.00", desc: "YaRN: высокая коррекция dim или alpha. Контролирует коррекцию высокочастотных компонентов. Значение -1.00 использует автонастройку. Редко требует изменения.", env: "LLAMA_ARG_YARN_BETA_SLOW", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--yarn-beta-fast N", type: "число", default: "-1.00", desc: "YaRN: низкая коррекция dim или beta. Контролирует коррекцию низкочастотных компонентов. Значение -1.00 использует автонастройку. Редко требует изменения.", env: "LLAMA_ARG_YARN_BETA_FAST", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "💾 KV-кэш и память", collapsed: true,
+          params: [
+            { flag: "-kvo, --kv-offload, --no-kv-offload", type: "флаг", default: "включено", desc: "Выгружать KV-кэш на GPU. При включении (по умолчанию) KV-кэш хранится в VRAM, что ускоряет доступ при генерации. При отключении (--no-kv-offload) KV-кэш остаётся в RAM, что освобождает VRAM для весов модели, но может замедлить генерацию из-за медленного доступа к RAM. Полезно отключать, если VRAM переполнена.", env: "LLAMA_ARG_KV_OFFLOAD", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--repack, --no-repack", type: "флаг", default: "включено", desc: "Включить переупаковку весов (weight repacking). Оптимизирует расположение весов в памяти для ускорения вычислений на GPU. Увеличивает время загрузки модели, но улучшает производительность инференса. При --no-repack переупаковка отключена (быстрее загрузка, но медленнее инференс).", env: "LLAMA_ARG_REPACK", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--no-host", type: "флаг", default: "—", desc: "Обойти host buffer, разрешив использование дополнительных буферов. Полезно для некоторых backend'ов (Vulkan, Metal), где host buffer может ограничивать производительность. Редко требует изменения.", env: "LLAMA_ARG_NO_HOST", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ctk, --cache-type-k TYPE", type: "тип", default: "f16", desc: "Тип данных KV-кэша для ключей (K). Доступные значения: f32 (32 бита, максимальная точность), f16 (16 бит, баланс), bf16 (16 бит, Brain Float), q8_0 (8-бит квантование, экономия памяти), q4_0/q4_1 (4-бит, максимальная экономия), iq4_nl (4-бит importance quantization), q5_0/q5_1 (5-бит). f16 — оптимальный выбор для большинства задач. q8_0 экономит ~50% памяти с минимальной потерей качества. q4_0 экономит ~75% памяти, но снижает качество.", env: "LLAMA_ARG_CACHE_TYPE_K", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ctv, --cache-type-v TYPE", type: "тип", default: "f16", desc: "Тип данных KV-кэша для значений (V). Аналогично --cache-type-k, но для значений. Обычно используется тот же тип, что и для K. Значения менее чувствительны к квантованию, чем ключи, поэтому можно использовать более агрессивное квантование для V.", env: "LLAMA_ARG_CACHE_TYPE_V", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-dt, --defrag-thold N", type: "число", default: "—", desc: "Порог дефрагментации KV-кэша (УСТАРЕЛ). В старых версиях контролировал, когда выполнять дефрагментацию кэша. В новых версиях дефрагментация выполняется автоматически. Параметр сохранён для обратной совместимости.", env: "LLAMA_ARG_DEFRAG_THOLD", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mlock", type: "флаг", default: "—", desc: "Заблокировать модель в оперативной памяти (mlock), предотвращая её выгрузку в файл подкачки (swap). Увеличивает физическое использование RAM, но улучшает стабильность времени ответа (нет задержек на подгрузку из swap). Требует достаточно свободной RAM. Не работает на Windows (используется VirtualLock).", env: "LLAMA_ARG_MLOCK", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mmap, --no-mmap", type: "флаг", default: "включено", desc: "Использовать memory-mapping (mmap) для загрузки модели. При включённом mmap (по умолчанию) модель загружается только по мере необходимости (lazy loading), что ускоряет запуск и экономит RAM. При --no-mmap модель полностью загружается в RAM сразу (медленнее запуск, но предсказуемое поведение). Полезно отключать, если модель часто обращается к разным частям файла.", env: "LLAMA_ARG_MMAP", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-dio, --direct-io, --no-direct-io", type: "флаг", default: "отключено", desc: "Использовать DirectIO для чтения файла модели, обходя кэш файловой системы ОС. Может ускорить загрузку больших моделей с медленных дисков (HDD), но замедлить с быстрых (SSD/NVMe). По умолчанию отключено. Работает только на Linux и macOS.", env: "LLAMA_ARG_DIO", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🖥️ GPU и мульти-GPU", collapsed: true,
+          params: [
+            { flag: "--numa TYPE", type: "выбор", default: "—", desc: "Оптимизации для систем с NUMA (Non-Uniform Memory Access). distribute — равномерное распределение нагрузки по всем узлам. isolate — только узлы запуска. numactl — использовать карту от утилиты numactl. Полезно для серверов с несколькими CPU. Перед использованием рекомендуется очистить системный кэш страниц.", env: "LLAMA_ARG_NUMA", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-dev, --device <dev1,dev2,..>", type: "список", default: "—", desc: "Список устройств для выгрузки через запятую (например, CUDA0,CUDA1 или Vulkan0,Vulkan1). none = не выгружать. Используйте --list-devices для просмотра доступных устройств. Полезно для выбора конкретных GPU в системе с несколькими видеокартами.", env: "LLAMA_ARG_DEVICE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ot, --override-tensor <pattern>=<type>,...", type: "override", default: "—", desc: "Переопределить тип буфера тензора для конкретных слоёв. Формат: <имя тензора>=<тип буфера>. Позволяет разместить конкретные тензоры на CPU или GPU независимо от общих настроек. Продвинутая опция для тонкой настройки.", env: "LLAMA_ARG_OVERRIDE_TENSOR", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-cmoe, --cpu-moe", type: "флаг", default: "—", desc: "Хранить все веса Mixture of Experts (MoE) в CPU. Полезно для MoE-моделей (Mixtral, DBRX), где экспертов много, но активны только некоторые. Экономит VRAM, но замедляет инференс из-за медленного доступа к CPU.", env: "LLAMA_ARG_CPU_MOE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ncmoe, --n-cpu-moe N", type: "число", default: "—", desc: "Хранить веса MoE первых N слоёв в CPU. Более гибкая версия --cpu-moe. Позволяет разместить часть экспертов на CPU, а часть на GPU. Полезно, если VRAM не хватает для всех экспертов.", env: "LLAMA_ARG_N_CPU_MOE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ngl, --gpu-layers, --n-gpu-layers N", type: "число/auto/all", default: "auto", desc: "Максимальное количество слоёв трансформера, выгружаемых в VRAM. auto — автоматически выбирает максимум. all — выгружает все слои (максимальная производительность). Число (например, 32) — точное количество слоёв. Увеличение ускоряет инференс, но требует больше VRAM. Все слои на GPU = максимальная скорость. Часть на CPU = медленнее, но экономит VRAM.", env: "LLAMA_ARG_N_GPU_LAYERS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-sm, --split-mode {none,layer,row,tensor}", type: "выбор", default: "layer", desc: "Режим распределения модели по нескольким GPU. none — один GPU. layer (по умолчанию) — слои и KV-кэш распределяются по GPU конвейерно (pipelined). row — разделение весов по строкам (параллельно, быстрее). tensor — разделение весов и KV (экспериментально). layer — оптимальный выбор для большинства задач.", env: "LLAMA_ARG_SPLIT_MODE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ts, --tensor-split N0,N1,...", type: "список", default: "пропорционально VRAM", desc: "Пропорции данных, передаваемых на каждый GPU (через запятую). Например, '3,1' означает 75% данных на GPU 0 и 25% на GPU 1. Используется с split-mode = row или tensor. По умолчанию пропорции рассчитываются автоматически на основе VRAM.", env: "LLAMA_ARG_TENSOR_SPLIT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-mg, --main-gpu INDEX", type: "индекс", default: "0", desc: "Основной GPU для модели (при split-mode = none) или для промежуточных результатов и KV (при split-mode = row). На этом GPU выделяется дополнительный буфер для временных данных. Обычно 0 (первый GPU).", env: "LLAMA_ARG_MAIN_GPU", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-fit, --fit [on|off]", type: "выбор", default: "on", desc: "Автоматически подбирать незаданные параметры (размер контекста, количество слоёв на GPU) для размещения модели в доступной памяти устройств. Полезно при ограниченной VRAM. При on сервер автоматически уменьшит ctx-size или n-gpu-layers, если модель не помещается.", env: "LLAMA_ARG_FIT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-fitt, --fit-target MiB0,MiB1,...", type: "список", default: "1024", desc: "Целевой запас памяти на устройство для --fit (в MiB). Одно значение применяется ко всем устройствам. По умолчанию 1024 MiB (1 ГБ) запаса. Увеличьте, если модель не помещается из-за фрагментации памяти.", env: "LLAMA_ARG_FIT_TARGET", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-fitc, --fit-ctx N", type: "число", default: "4096", desc: "Минимальный размер контекста, который может быть установлен опцией --fit. По умолчанию 4096. Сервер не уменьшит ctx-size ниже этого значения даже если модель не помещается.", env: "LLAMA_ARG_FIT_CTX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--check-tensors", type: "флаг", default: "false", desc: "Проверить данные тензоров модели на невалидные значения (NaN, Inf) при загрузке. Полезно для отладки повреждённых моделей. Замедляет загрузку. По умолчанию отключено.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--override-kv KEY=TYPE:VALUE,...", type: "override", default: "—", desc: "Переопределить метаданные модели по ключу. Формат: KEY=TYPE:VALUE. Типы: int, float, bool, str. Пример: --override-kv tokenizer.ggml.add_bos_token=bool:false. Продвинутая опция для изменения поведения модели без переобучения.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--op-offload, --no-op-offload", type: "флаг", default: "true", desc: "Выгружать операции с тензорами на устройство (GPU). При включении (по умолчанию) операции выполняются на GPU, что быстрее. При --no-op-offload операции выполняются на CPU, что может быть полезно для отладки или если GPU перегружен.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🔧 LoRA и Control Vectors", collapsed: true,
+          params: [
+            { flag: "--lora FNAME", type: "файл", default: "—", desc: "Путь к LoRA-адаптеру (Low-Rank Adaptation). Можно загрузить несколько адаптеров через запятую. LoRA позволяет адаптировать модель под конкретную задачу без полного переобучения. Адаптеры применяются к весам модели при загрузке.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--lora-scaled FNAME:SCALE,...", type: "файл:scale", default: "—", desc: "LoRA-адаптер с пользовательским масштабированием. Формат: FNAME:SCALE. Позволяет контролировать силу влияния адаптера. SCALE=1.0 — полное влияние, SCALE=0.5 — половинное. Можно указать несколько через запятую.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--control-vector FNAME", type: "файл", default: "—", desc: "Добавить control vector (вектор управления). Можно добавить несколько через запятую. Control vectors позволяют изменить поведение модели (например, сделать более токсичным или более безопасным) без изменения весов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--control-vector-scaled FNAME:SCALE,...", type: "файл:scale", default: "—", desc: "Control vector с пользовательским масштабированием. Формат: FNAME:SCALE. Позволяет контролировать силу влияния вектора. Можно указать несколько через запятую.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--control-vector-layer-range START END", type: "диапазон", default: "—", desc: "Диапазон слоёв для применения control vector(s). START и END включительно. Позволяет применить вектор только к определённым слоям, а не ко всей модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "📥 Загрузка моделей", collapsed: true,
+          params: [
+            { flag: "-m, --model FNAME", type: "файл", default: "—", desc: "Путь к GGUF-файлу модели на локальном диске. Обязательный параметр, если не используется --hf-repo, --model-url или --docker-repo. Поддерживаются все квантованные форматы GGUF (Q4_K_M, Q5_K_M, Q8_0, F16 и т.д.).", env: "LLAMA_ARG_MODEL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-mu, --model-url MODEL_URL", type: "URL", default: "—", desc: "URL для скачивания модели. Позволяет загрузить модель напрямую по URL без предварительного скачивания. Полезно для быстрого тестирования.", env: "LLAMA_ARG_MODEL_URL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-dr, --docker-repo [<repo>/]<model>[:quant]", type: "строка", default: "—", desc: "Docker Hub репозиторий модели. repo опционален (по умолчанию ai/). quant опционален (по умолчанию :latest). Пример: gemma3 загрузит ai/gemma3:latest. Удобно для загрузки официальных моделей.", env: "LLAMA_ARG_DOCKER_REPO", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-hf, --hf-repo <user>/<model>[:quant]", type: "строка", default: "—", desc: "Hugging Face репозиторий модели. quant опционален (по умолчанию Q4_K_M, если существует, иначе первый файл в репо). mmproj загружается автоматически, если доступен (отключить через --no-mmproj). Пример: ggml-org/GLM-4.7-Flash-GGUF:Q4_K_M. Самый удобный способ загрузки моделей.", env: "LLAMA_ARG_HF_REPO", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-hff, --hf-file FILE", type: "файл", default: "—", desc: "Конкретное имя GGUF-файла в репозитории HF. Если указано, переопределяет quant из --hf-repo. Полезно, когда в репозитории несколько GGUF-файлов и нужно выбрать конкретный.", env: "LLAMA_ARG_HF_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-hfv, -hfrv, --hf-repo-v <user>/<model>[:quant]", type: "строка", default: "—", desc: "Hugging Face репозиторий для vocoder модели (используется для TTS и audio generation). Аналогично --hf-repo, но для vocoder.", env: "LLAMA_ARG_HF_REPO_V", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-hffv, --hf-file-v FILE", type: "файл", default: "—", desc: "GGUF-файл для vocoder модели. Аналогично --hf-file, но для vocoder.", env: "LLAMA_ARG_HF_FILE_V", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-hft, --hf-token TOKEN", type: "токен", default: "из HF_TOKEN", desc: "Токен доступа Hugging Face. Необходим для загрузки из приватных репозиториев или для обхода ограничений скорости (rate limits). По умолчанию берётся из переменной окружения HF_TOKEN.", env: "HF_TOKEN", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "📋 Логирование", collapsed: true,
+          params: [
+            { flag: "--log-disable", type: "флаг", default: "—", desc: "Полностью отключить вывод логов. Полезно для production-серверов, где логи не нужны и только замедляют работу.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--log-file FNAME", type: "файл", default: "—", desc: "Перенаправить вывод логов в указанный файл вместо стандартного вывода (stdout). Полезно для сохранения истории работы сервера.", env: "LLAMA_ARG_LOG_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--log-colors [on|off|auto]", type: "выбор", default: "auto", desc: "Цветной вывод логов. on — всегда цвета. off — без цветов. auto (по умолчанию) — цвета включаются, если вывод происходит в терминал (TTY). Полезно для улучшения читаемости в терминале.", env: "LLAMA_ARG_LOG_COLORS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-v, --verbose, --log-verbose", type: "флаг", default: "—", desc: "Установить уровень подробности в максимальный (отладка). То же самое, что --log-verbosity 5. Выводит все сообщения, включая отладочные. Полезно для диагностики проблем.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--offline", type: "флаг", default: "—", desc: "Офлайн режим:forces use of cache, prevents network access. Запрещает любые сетевые запросы (загрузка моделей, проверка обновлений). Полезно для air-gapped систем или когда нужно гарантировать, что сервер не будет обращаться к сети.", env: "LLAMA_ARG_OFFLINE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-lv, --verbosity, --log-verbosity N", type: "число", default: "3", desc: "Порог вербозности логов. 0 — generic output (всё). 1 — error (только ошибки). 2 — warning (ошибки и предупреждения). 3 — info (по умолчанию, ошибки, предупреждения и информация). 4 — trace (более подробная информация). 5 — debug (всё, включая отладочные сообщения). Сообщения с уровнем выше указанного игнорируются.", env: "LLAMA_ARG_LOG_VERBOSITY", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--log-prefix, --no-log-prefix", type: "флаг", default: "—", desc: "Включить префикс в сообщениях лога (уровень, компонент). По умолчанию включено. При --no-log-prefix префикс отключается (более чистый вывод).", env: "LLAMA_ARG_LOG_PREFIX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--log-timestamps, --no-log-timestamps", type: "флаг", default: "—", desc: "Включить временные метки в логах. По умолчанию включено. При --no-log-timestamps временные метки отключаются.", env: "LLAMA_ARG_LOG_TIMESTAMPS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🎲 Параметры семплирования", collapsed: true,
+          params: [
+            { flag: "--samplers SAMPLERS", type: "список", default: "penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature", desc: "Семплеры для генерации в порядке через ';'. Порядок важен — семплеры применяются последовательно. Доступные: penalties, dry, top_n_sigma, top_k, typ_p, top_p, min_p, xtc, temperature. Можно отключить семплер, убрав его из списка.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-s, --seed SEED", type: "число", default: "-1 (случайный)", desc: "Seed для генератора случайных чисел (RNG). При -1 используется случайный seed. Фиксированный seed делает генерацию детерминированной (одинаковые результаты при одинаковых входных данных). Полезно для воспроизводимости тестов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--sampler-seq, --sampling-seq SEQUENCE", type: "строка", default: "edskypmxt", desc: "Упрощённая последовательность семплеров. Буквы: e=penalties, d=dry, s=top_n_sigma, k=top_k, y=typ_p, p=top_p, m=min_p, x=xtc, t=temperature. Альтернатива --samplers для быстрого указания порядка.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ignore-eos", type: "флаг", default: "—", desc: "Игнорировать токен EOS (End of Sequence) и продолжать генерацию до достижения --n-predict. Подразумевает --logit-bias EOS-inf (запрещает выбор EOS). Полезно для принудительной генерации заданной длины.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--temp, --temperature N", type: "число", default: "0.80", desc: "Температура — параметр, контролирующий случайность выбора токенов. При 0.8 модель даёт умеренно разнообразные ответы. Близкие к 0 делают ответ детерминированным (выбирается наиболее вероятный токен). Высокие значения (>1.0) увеличивают разнообразие, но могут снизить связность. Оптимально: 0.7-0.9 для большинства задач.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--top-k N", type: "число", default: "40", desc: "Top-k семплинг: при выборе следующего токена рассматриваются только K наиболее вероятных токенов. Значение 0 отключает фильтрацию. Меньшие значения (10-20) делают ответ более предсказуемым, большие (50-100) — более разнообразным. Оптимально: 40-50.", env: "LLAMA_ARG_TOP_K", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--top-p N", type: "число", default: "0.95", desc: "Nucleus-семплинг (Top-p): рассматриваются токены, чья кумулятивная вероятность не превышает P. Значение 1.0 отключает этот фильтр. Меньшие значения (0.8-0.9) отбрасывают маловероятные токены, большие (0.95-0.99) оставляют больше вариантов. Оптимально: 0.9-0.95.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--min-p N", type: "число", default: "0.05", desc: "Min-p семплинг: игнорируются токены с вероятностью ниже P * (максимальная вероятность). Эффективно отсеивает маловероятные токены. Значение 0.0 отключает фильтр. Оптимально: 0.05-0.1.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--top-nsigma, --top-n-sigma N", type: "число", default: "-1.00", desc: "Top-n-sigma семплинг: отбрасываются токены, чья вероятность ниже (максимальная вероятность - N * стандартное отклонение). Значение -1.0 отключает фильтр. Редко используется.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--xtc-probability N", type: "число", default: "0.00", desc: "Вероятность XTC (Exclude Top Choices). Значение 0.0 отключает. XTC удаляет наиболее вероятные токены с заданной вероятностью, увеличивая разнообразие. Редко используется.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--xtc-threshold N", type: "число", default: "0.10", desc: "Порог XTC. Токены с вероятностью выше порога могут быть удалены XTC. Значение 1.0 отключает.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--typical, --typical-p N", type: "число", default: "1.00", desc: "Locally typical sampling, параметр p. Выбирает токены, чья энтропия близка к целевой. Значение 1.0 отключает фильтр. Меньшие значения (0.5-0.9) делают ответ более 'типичным'.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--repeat-last-n N", type: "число", default: "64", desc: "Последние N токенов, которые учитываются для штрафа за повторение. Значение 0 отключает штраф. -1 = размер контекста. Большие значения учитывают больше истории, но замедляют генерацию.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--repeat-penalty N", type: "число", default: "1.00", desc: "Штраф за повторение токенов. Значения > 1.0 уменьшают вероятность повторения недавно использованных токенов. Оптимально: 1.1-1.2. Значение 1.0 отключает штраф.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--presence-penalty N", type: "число", default: "0.00", desc: "Штраф за присутствие токенов (alpha presence penalty). Штрафует токены, которые уже встречались в контексте, независимо от частоты. Значение 0.0 отключает. Оптимально: 0.0-0.5.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--frequency-penalty N", type: "число", default: "0.00", desc: "Штраф за частоту токенов (alpha frequency penalty). Штрафует токены пропорционально их частоте в контексте. Значение 0.0 отключает. Оптимально: 0.0-0.5.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dry-multiplier N", type: "число", default: "0.00", desc: "Множитель DRY (Don't Repeat Yourself) семплинга. Значение 0.0 отключает. DRY штрафует токены, которые создают повторяющиеся последовательности. Оптимально: 0.5-1.0.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dry-base N", type: "число", default: "1.75", desc: "Базовое значение DRY семплинга. Контролирует силу штрафа. Оптимально: 1.5-2.0.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dry-allowed-length N", type: "число", default: "2", desc: "Разрешённая длина для DRY семплинга. Последовательности короче этого значения не штрафуются.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dry-penalty-last-n N", type: "число", default: "-1", desc: "Штраф DRY для последних N токенов. Значение 0 отключает. -1 = размер контекста.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dry-sequence-breaker STRING", type: "строка", default: "—", desc: "Добавить разделитель последовательности для DRY семплинга. Очищает стандартные разделители ('\\n', ':', '\"', '*'). Используйте 'none' для отключения разделителей.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--adaptive-target N", type: "число", default: "-1.00", desc: "Adaptive-p: выбирать токены около этой вероятности (валидный диапазон 0.0-1.0, отрицательное = отключено). Динамически адаптирует семплинг к целевой вероятности.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--adaptive-decay N", type: "число", default: "0.90", desc: "Adaptive-p: скорость затухания адаптации (валидный диапазон 0.0-0.99). Меньшие значения более реактивны, большие более стабильны.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dynatemp-range N", type: "число", default: "0.00", desc: "Диапазон динамической температуры. Значение 0.0 отключает. Динамическая температура адаптируется к энтропии распределения токенов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--dynatemp-exp N", type: "число", default: "1.00", desc: "Экспонента динамической температуры. Контролирует, как быстро температура адаптируется.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mirostat N", type: "0,1,2", default: "0 (отключён)", desc: "Алгоритм Mirostat для динамического контроля перплексии (качества). 0 — отключено. 1 — Mirostat. 2 — Mirostat 2.0 (улучшенная версия). Игнорирует top-k, top-p и typical семплеры. Полезно для поддержания стабильного качества генерации.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mirostat-lr N", type: "число", default: "0.10", desc: "Скорость обучения Mirostat (параметр eta). Влияет на то, как быстро алгоритм адаптируется к целевой энтропии. Меньшие значения более стабильны, большие более реактивны.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mirostat-ent N", type: "число", default: "5.00", desc: "Целевая энтропия Mirostat (параметр tau). Более высокие значения дают более разнообразные ответы. Оптимально: 4.0-6.0.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-l, --logit-bias TOKEN_ID(+/-)BIAS", type: "override", default: "—", desc: "Изменить вероятность токена. Формат: TOKEN_ID(+/-)BIAS. Пример: --logit-bias 15043+1 увеличит вероятность токена 'Hello', --logit-bias 15043-1 уменьшит. BIAS — логит (не вероятность). Полезно для запрета или поощрения конкретных токенов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--grammar GRAMMAR", type: "BNF", default: "—", desc: "Грамматика в формате BNF (Backus-Naur Form) для ограничения генерации. Позволяет заставить модель выводить текст строго по заданному шаблону (например, JSON, код, SQL). См. примеры в директории grammars/.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--grammar-file FNAME", type: "файл", default: "—", desc: "Файл с грамматикой в формате BNF. Альтернатива --grammar для длинных грамматик.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-j, --json-schema SCHEMA", type: "JSON", default: "—", desc: "JSON Schema для ограничения генерации. Модель будет выводить данные, соответствующие указанной схеме. Пример: {} для любого JSON объекта. Для сложных схем с внешними $refs используйте --grammar + example/json_schema_to_grammar.py.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-jf, --json-schema-file FILE", type: "файл", default: "—", desc: "Файл с JSON схемой. Альтернатива --json-schema для длинных схем.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-bs, --backend-sampling", type: "флаг", default: "отключено", desc: "Включить backend семплинг (экспериментально). Переносит семплинг на backend (GPU), что может ускорить генерацию. Нестабильно, используйте с осторожностью.", env: "LLAMA_ARG_BACKEND_SAMPLING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🚀 Speculative decoding", collapsed: true,
+          params: [
+            { flag: "--spec-draft-type-k, --cache-type-k-draft TYPE", type: "тип", default: "f16", desc: "Тип данных KV-кэша для ключей (K) draft модели. Аналогично --cache-type-k, но для draft модели в speculative decoding.", env: "LLAMA_ARG_SPEC_DRAFT_CACHE_TYPE_K", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-type-v, --cache-type-v-draft TYPE", type: "тип", default: "f16", desc: "Тип данных KV-кэша для значений (V) draft модели. Аналогично --cache-type-v, но для draft модели.", env: "LLAMA_ARG_SPEC_DRAFT_CACHE_TYPE_V", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-hf, -hfd, -hfrd, --hf-repo-draft <user>/<model>[:quant]", type: "строка", default: "—", desc: "Hugging Face репозиторий для draft модели в speculative decoding. Аналогично --hf-repo, но для draft модели. Draft модель — маленькая быстрая модель, которая предлагает токены для проверки основной моделью.", env: "LLAMA_ARG_SPEC_DRAFT_HF_REPO", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-threads, -td, --threads-draft N", type: "число", default: "как --threads", desc: "Количество потоков для draft модели. Аналогично --threads, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-threads-batch, -tbd, --threads-batch-draft N", type: "число", default: "как --threads-draft", desc: "Количество потоков для батчей draft модели. Аналогично --threads-batch, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-cpu-mask, -Cd, --cpu-mask-draft M", type: "hex", default: "как --cpu-mask", desc: "Маска привязки CPU для draft модели. Аналогично --cpu-mask, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-cpu-range, -Crd, --cpu-range-draft lo-hi", type: "диапазон", default: "—", desc: "Диапазон CPU для draft модели. Аналогично --cpu-range, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-cpu-strict, --cpu-strict-draft <0|1>", type: "0/1", default: "как --cpu-strict", desc: "Строгая привязка CPU для draft модели. Аналогично --cpu-strict, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-prio, --prio-draft N", type: "0..3", default: "0", desc: "Приоритет для draft модели. Аналогично --prio, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-poll, --poll-draft <0|1>", type: "0/1", default: "как --poll", desc: "Опрос для draft модели. Аналогично --poll, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-cpu-mask-batch, -Cbd, --cpu-mask-batch-draft M", type: "hex", default: "как --cpu-mask", desc: "Маска CPU для батчей draft модели. Аналогично --cpu-mask-batch, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-cpu-strict-batch, --cpu-strict-batch-draft <0|1>", type: "0/1", default: "как --cpu-strict-draft", desc: "Строгая привязка CPU для батчей draft модели. Аналогично --cpu-strict-batch, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-prio-batch, --prio-batch-draft N", type: "0..3", default: "0", desc: "Приоритет для батчей draft модели. Аналогично --prio-batch, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-poll-batch, --poll-batch-draft <0|1>", type: "0/1", default: "как --poll-draft", desc: "Опрос для батчей draft модели. Аналогично --poll-batch, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-override-tensor, -otd, --override-tensor-draft <pattern>=<type>,...", type: "override", default: "—", desc: "Переопределить тип буфера тензора для draft модели. Аналогично --override-tensor, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-cpu-moe, -cmoed, --cpu-moe-draft", type: "флаг", default: "—", desc: "Хранить все веса MoE draft модели в CPU. Аналогично --cpu-moe, но для draft модели.", env: "LLAMA_ARG_SPEC_DRAFT_CPU_MOE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-n-cpu-moe, --n-cpu-moe-draft N", type: "число", default: "—", desc: "Хранить веса MoE первых N слоёв draft модели в CPU. Аналогично --n-cpu-moe, но для draft модели.", env: "LLAMA_ARG_SPEC_DRAFT_N_CPU_MOE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-n-max N", type: "число", default: "3", desc: "Количество токенов для draft в speculative decoding. Draft модель предлагает N токенов, основная модель проверяет их. Больше токенов = больше ускорение, но выше риск отклонения.", env: "LLAMA_ARG_SPEC_DRAFT_N_MAX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-n-min N", type: "число", default: "0", desc: "Минимальное количество draft токенов для использования в speculative decoding. Если draft модель предлагает меньше токенов, speculative decoding не используется.", env: "LLAMA_ARG_SPEC_DRAFT_N_MIN", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-p-split, --draft-p-split P", type: "число", default: "0.10", desc: "Вероятность разделения speculative decoding. Контролирует, когда переключаться между draft и основной моделью.", env: "LLAMA_ARG_SPEC_DRAFT_P_SPLIT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-p-min, --draft-p-min P", type: "число", default: "0.00", desc: "Минимальная вероятность speculative decoding (greedy). Токены с вероятностью ниже этого значения отклоняются.", env: "LLAMA_ARG_SPEC_DRAFT_P_MIN", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-backend-sampling, --no-spec-draft-backend-sampling", type: "флаг", default: "включено", desc: "Выгружать семплинг draft модели на backend (GPU). При отключении семплинг выполняется на CPU.", env: "LLAMA_ARG_SPEC_DRAFT_BACKEND_SAMPLING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-device, -devd, --device-draft <dev1,dev2,..>", type: "список", default: "—", desc: "Устройства для draft модели. Аналогично --device, но для draft модели.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-ngl, -ngld, --n-gpu-layers-draft N", type: "число/auto/all", default: "auto", desc: "Количество слоёв draft модели в VRAM. Аналогично --n-gpu-layers, но для draft модели.", env: "LLAMA_ARG_N_GPU_LAYERS_DRAFT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-draft-model, -md, --model-draft FNAME", type: "файл", default: "—", desc: "Путь к draft модели для speculative decoding. Draft модель — маленькая быстрая модель, которая предлагает токены для проверки основной моделью.", env: "LLAMA_ARG_SPEC_DRAFT_MODEL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-type none,draft-simple,draft-eagle3,draft-mtp,ngram-simple,ngram-map-k,ngram-map-k4v,ngram-mod,ngram-cache", type: "список", default: "none", desc: "Типы speculative decoding через запятую. none — отключено. draft-simple — простое draft моделирование. draft-eagle3 — EAGLE-3. draft-mtp — multi-token prediction. ngram-* — n-gram based методы. Можно комбинировать несколько типов.", env: "LLAMA_ARG_SPEC_TYPE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-mod-n-min N", type: "число", default: "48", desc: "Минимальное количество ngram токенов для ngram-based speculative decoding (модифицированный).", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-mod-n-max N", type: "число", default: "64", desc: "Максимальное количество ngram токенов для ngram-based speculative decoding (модифицированный).", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-mod-n-match N", type: "число", default: "24", desc: "Длина поиска ngram-mod.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-simple-size-n N", type: "число", default: "12", desc: "Размер N ngram для ngram-simple speculative decoding (длина поиска).", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-simple-size-m N", type: "число", default: "48", desc: "Размер M ngram для ngram-simple speculative decoding (длина draft).", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-simple-min-hits N", type: "число", default: "1", desc: "Минимальное количество попаданий для ngram-simple.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-map-k-size-n N", type: "число", default: "12", desc: "Размер N ngram для ngram-map-k speculative decoding.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-map-k-size-m N", type: "число", default: "48", desc: "Размер M ngram для ngram-map-k speculative decoding.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-map-k-min-hits N", type: "число", default: "1", desc: "Минимальное количество попаданий для ngram-map-k.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-map-k4v-size-n N", type: "число", default: "12", desc: "Размер N ngram для ngram-map-k4v speculative decoding.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-map-k4v-size-m N", type: "число", default: "48", desc: "Размер M ngram для ngram-map-k4v speculative decoding.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-map-k4v-min-hits N", type: "число", default: "1", desc: "Минимальное количество попаданий для ngram-map-k4v.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--draft, --draft-n, --draft-max N", type: "число", default: "—", desc: "УДАЛЁН. Используйте --spec-draft-n-max или --spec-ngram-mod-n-max.", env: "LLAMA_ARG_DRAFT_MAX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--draft-min, --draft-n-min N", type: "число", default: "—", desc: "УДАЛЁН. Используйте --spec-draft-n-min или --spec-ngram-mod-n-min.", env: "LLAMA_ARG_DRAFT_MIN", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-size-n N", type: "число", default: "—", desc: "УДАЛЁН. Используйте --spec-ngram-*-size-n или --spec-ngram-mod-n-match.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-size-m N", type: "число", default: "—", desc: "УДАЛЁН. Используйте --spec-ngram-*-size-m.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-ngram-min-hits N", type: "число", default: "—", desc: "УДАЛЁН. Используйте --spec-ngram-*-min-hits.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🌐 Серверные параметры", collapsed: true,
+          params: [
+            { flag: "-lcs, --lookup-cache-static FNAME", type: "файл", default: "—", desc: "Путь к статическому кэшу поиска для lookup decoding. Кэш не обновляется во время генерации. Полезно для ускорения повторяющихся запросов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-lcd, --lookup-cache-dynamic FNAME", type: "файл", default: "—", desc: "Путь к динамическому кэшу поиска для lookup decoding. Кэш обновляется во время генерации. Полезно для адаптивного ускорения.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-ctxcp, --ctx-checkpoints, --swa-checkpoints N", type: "число", default: "32", desc: "Максимальное количество checkpoint'ов контекста на слот. Checkpoint'и позволяют быстро восстанавливать состояние контекста. Полезно для длинных диалогов.", env: "LLAMA_ARG_CTX_CHECKPOINTS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-cms, --checkpoint-min-step N", type: "число", default: "256", desc: "Минимальный интервал между checkpoint'ами в токенах (0 = нет минимума). Контролирует, как часто создаются checkpoint'и.", env: "LLAMA_ARG_CHECKPOINT_MIN_SPACING_NT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-cram, --cache-ram N", type: "число", default: "8192", desc: "Максимальный размер кэша в MiB. -1 = без лимита. 0 = отключено. По умолчанию 8192 MiB (8 ГБ). Контролирует объём RAM, используемый для кэша.", env: "LLAMA_ARG_CACHE_RAM", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-kvu, --kv-unified, --no-kv-unified", type: "флаг", default: "включено (если auto)", desc: "Единый буфер KV для всех последовательностей. При включении все запросы используют общий KV-кэш, что экономит память. При отключении каждый запрос имеет свой KV-кэш.", env: "LLAMA_ARG_KV_UNIFIED", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--cache-idle-slots, --no-cache-idle-slots", type: "флаг", default: "включено", desc: "Сохранять и очищать неактивные слоты при новой задаче. Требует unified KV и cache-ram. Экономит память, очищая неактивные слоты.", env: "LLAMA_ARG_CACHE_IDLE_SLOTS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--context-shift, --no-context-shift", type: "флаг", default: "отключено", desc: "Использовать сдвиг контекста при бесконечной генерации. При включении старые токены удаляются, когда контекст переполняется, позволяя продолжать генерацию бесконечно.", env: "LLAMA_ARG_CONTEXT_SHIFT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-r, --reverse-prompt PROMPT", type: "строка", default: "—", desc: "Остановить генерацию при появлении PROMPT и вернуть управление пользователю. Полезно для интерактивного режима.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-sp, --special", type: "флаг", default: "false", desc: "Включить вывод специальных токенов (special tokens). По умолчанию специальные токены скрыты.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--warmup, --no-warmup", type: "флаг", default: "включено", desc: "Выполнить прогрев (warmup) пустым запуском перед началом работы. Улучшает производительность первых запросов, инициализируя GPU и кэши.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spm-infill", type: "флаг", default: "отключено", desc: "Использовать паттерн Suffix/Prefix/Middle (SPM) для infill вместо Prefix/Suffix/Middle (PSM). Некоторые модели предпочитают SPM.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--pooling {none,mean,cls,last,rank}", type: "выбор", default: "из модели", desc: "Тип пулинга для эмбеддингов. none — без пулинга. mean — среднее. cls — первый токен. last — последний токен. rank — ранжирование. Используется только с dedicated embedding моделями.", env: "LLAMA_ARG_POOLING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-np, --parallel N", type: "число", default: "-1 (auto)", desc: "Количество слотов сервера для параллельной обработки запросов. Каждый слот обслуживает одно соединение. При -1 (auto) количество слотов определяется автоматически. Больше слотов = больше параллелизма, но больше потребление памяти.", env: "LLAMA_ARG_N_PARALLEL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-cb, --cont-batching, --no-cont-batching", type: "флаг", default: "включено", desc: "Непрерывный бэтчинг (continuous/dynamic batching). Позволяет серверу эффективно обрабатывать запросы разной длины, объединяя их в батчи на лету. Значительно повышает пропускную способность при множественных запросах.", env: "LLAMA_ARG_CONT_BATCHING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-mm, --mmproj FILE", type: "файл", default: "—", desc: "Путь к мультимодальному проектору (multimodal projector). Необходим для vision моделей (LLaVA, Qwen-VL и т.д.). Если используется -hf, проектор загружается автоматически (отключить через --no-mmproj).", env: "LLAMA_ARG_MMPROJ", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-tk, --talker-model FILE", type: "файл", default: "—", desc: "Путь к qwen3-omni talker GGUF модели. Включает endpoint /v1/audio/speech для генерации речи. Используется только с Qwen3-Omni моделями.", env: "LLAMA_ARG_TALKER_MODEL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-c2w, --code2wav-model FILE", type: "файл", default: "—", desc: "Путь к qwen3-omni code2wav GGUF модели. Используется для преобразования аудио-кода в wav. Только для Qwen3-Omni.", env: "LLAMA_ARG_CODE2WAV_MODEL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-mmu, --mmproj-url URL", type: "URL", default: "—", desc: "URL мультимодального проектора. Альтернатива --mmproj для загрузки проектора по URL.", env: "LLAMA_ARG_MMPROJ_URL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mmproj-auto, --no-mmproj, --no-mmproj-auto", type: "флаг", default: "включено", desc: "Использовать мультимодальный проектор (если доступен). Полезно при использовании -hf, где проектор загружается автоматически. При --no-mmproj проектор не загружается.", env: "LLAMA_ARG_MMPROJ_AUTO", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--mmproj-offload, --no-mmproj-offload", type: "флаг", default: "включено", desc: "Выгружать мультимодальный проектор на GPU. Ускоряет обработку изображений. При --no-mmproj-offload проектор остаётся на CPU.", env: "LLAMA_ARG_MMPROJ_OFFLOAD", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--image-min-tokens N", type: "число", default: "из модели", desc: "Минимальное количество токенов, которое может занять изображение. Используется только vision моделями с динамическим разрешением.", env: "LLAMA_ARG_IMAGE_MIN_TOKENS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--image-max-tokens N", type: "число", default: "из модели", desc: "Максимальное количество токенов, которое может занять изображение. Используется только vision моделями с динамическим разрешением.", env: "LLAMA_ARG_IMAGE_MAX_TOKENS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-a, --alias STRING", type: "строка", default: "—", desc: "Псевдонимы модели через запятую (для API). Позволяет обращаться к модели по разным именам через API.", env: "LLAMA_ARG_ALIAS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--tags STRING", type: "строка", default: "—", desc: "Теги модели через запятую (информационные, не используются для маршрутизации). Полезно для организации моделей.", env: "LLAMA_ARG_TAGS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--embd-normalize N", type: "число", default: "2", desc: "Нормализация эмбеддингов. -1 = нет. 0 = max absolute int16. 1 = taxicab (L1). 2 = euclidean (L2, по умолчанию). >2 = p-norm.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--host HOST", type: "IP/сокет", default: "127.0.0.1", desc: "IP-адрес для прослушивания входящих соединений. Используйте '0.0.0.0' для доступа извне. Для UNIX-сокетов укажите путь, оканчивающийся на .sock (например, /tmp/llama.sock).", env: "LLAMA_ARG_HOST", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--port PORT", type: "число", default: "8080", desc: "TCP-порт, на котором сервер будет принимать HTTP-запросы. Убедитесь, что порт не занят другим приложением.", env: "LLAMA_ARG_PORT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--reuse-port", type: "флаг", default: "отключено", desc: "Разрешить нескольким сокетам привязываться к одному порту. Полезно для запуска нескольких экземпляров сервера на одном порту (load balancing).", env: "LLAMA_ARG_REUSE_PORT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--path PATH", type: "путь", default: "—", desc: "Путь для раздачи статических файлов. Позволяет серверу работать как веб-сервер для статического контента.", env: "LLAMA_ARG_STATIC_PATH", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--api-prefix PREFIX", type: "строка", default: "—", desc: "Префикс пути API (без завершающего слэша). Позволяет разместить API по пути, отличному от корневого (например, /api/v1).", env: "LLAMA_ARG_API_PREFIX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--webui-config JSON", type: "JSON", default: "—", desc: "[УСТАРЕЛ: используйте --ui-config] JSON, предоставляющий настройки WebUI по умолчанию (переопределяет настройки WebUI по умолчанию).", env: "LLAMA_ARG_WEBUI_CONFIG", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ui-config JSON", type: "JSON", default: "—", desc: "JSON, предоставляющий настройки UI по умолчанию (переопределяет настройки UI по умолчанию).", env: "LLAMA_ARG_UI_CONFIG", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--webui-config-file PATH", type: "путь", default: "—", desc: "[УСТАРЕЛ: используйте --ui-config-file] Файл JSON, предоставляющий настройки WebUI по умолчанию.", env: "LLAMA_ARG_WEBUI_CONFIG_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ui-config-file PATH", type: "путь", default: "—", desc: "Файл JSON, предоставляющий настройки UI по умолчанию.", env: "LLAMA_ARG_UI_CONFIG_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--webui-mcp-proxy, --no-webui-mcp-proxy", type: "флаг", default: "—", desc: "[УСТАРЕЛ: используйте --ui-mcp-proxy/--no-ui-mcp-proxy] Экспериментально: включить MCP CORS proxy.", env: "LLAMA_ARG_WEBUI_MCP_PROXY", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ui-mcp-proxy, --no-ui-mcp-proxy", type: "флаг", default: "отключено", desc: "Экспериментально: включить MCP CORS proxy. НЕ включайте в ненадёжных средах (риск безопасности).", env: "LLAMA_ARG_UI_MCP_PROXY", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--tools TOOL1,TOOL2,...", type: "список", default: "нет инструментов", desc: "Экспериментально: включить встроенные инструменты для AI агентов. НЕ включайте в ненадёжных средах. Укажите 'all' для включения всех инструментов. Доступные инструменты: read_file, file_glob_search, grep_search, exec_shell_command, write_file, edit_file, apply_diff, get_datetime.", env: "LLAMA_ARG_TOOLS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--webui, --no-webui", type: "флаг", default: "—", desc: "[УСТАРЕЛ: используйте --ui/--no-ui] Включить Web UI.", env: "LLAMA_ARG_WEBUI", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ui, --no-ui", type: "флаг", default: "включено", desc: "Включить Web UI. При отключении доступно только API, но не веб-страница чата.", env: "LLAMA_ARG_UI", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--embedding, --embeddings", type: "флаг", default: "отключено", desc: "Ограничить сервер режимом извлечения эмбеддингов. Отключает генерацию текста, оставляя только эндпоинты для получения векторных представлений. Используйте только с dedicated embedding моделями.", env: "LLAMA_ARG_EMBEDDINGS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--rerank, --reranking", type: "флаг", default: "отключено", desc: "Включить endpoint reranking на сервере. Позволяет переупорядочивать документы по релевантности запросу.", env: "LLAMA_ARG_RERANKING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--api-key KEY", type: "строка", default: "нет (без авторизации)", desc: "API-ключ для аутентификации. Можно указать несколько ключей через запятую. Запросы должны содержать заголовок Authorization: Bearer <ключ>.", env: "LLAMA_API_KEY", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--api-key-file FNAME", type: "файл", default: "—", desc: "Путь к файлу, содержащему API-ключи (по одному на строку). Альтернатива --api-key для большого количества ключей.", env: "LLAMA_ARG_API_KEY_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ssl-key-file FNAME", type: "файл", default: "—", desc: "Путь к файлу с PEM-кодированным SSL приватным ключом. Необходимо для HTTPS.", env: "LLAMA_ARG_SSL_KEY_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--ssl-cert-file FNAME", type: "файл", default: "—", desc: "Путь к файлу с PEM-кодированным SSL сертификатом. Необходимо для HTTPS.", env: "LLAMA_ARG_SSL_CERT_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--chat-template-kwargs STRING", type: "JSON", default: "—", desc: "Устанавливает дополнительные параметры для JSON парсера шаблонов. Должен быть валидной JSON строкой. Пример: '{\"key1\":\"value1\",\"key2\":\"value2\"}'.", env: "LLAMA_ARG_CHAT_TEMPLATE_KWARGS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-to, --timeout N", type: "число", default: "3600", desc: "Таймаут чтения/записи сервера в секундах. По умолчанию 3600 (1 час). Увеличьте для длинных генераций.", env: "LLAMA_ARG_TIMEOUT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--sse-ping-interval N", type: "число", default: "30", desc: "Интервал SSE ping в секундах (-1 = отключено). По умолчанию 30 секунд. Контролирует, как часто сервер отправляет ping для поддержания соединения.", env: "LLAMA_ARG_SSE_PING_INTERVAL", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--threads-http N", type: "число", default: "-1", desc: "Количество потоков для обработки HTTP-запросов. При -1 используется значение по умолчанию (обычно 1 поток на ядро).", env: "LLAMA_ARG_THREADS_HTTP", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--cache-prompt, --no-cache-prompt", type: "флаг", default: "включено", desc: "Включить кэширование промптов. Ускоряет обработку повторяющихся промптов. При отключении каждый промпт обрабатывается с нуля.", env: "LLAMA_ARG_CACHE_PROMPT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--cache-reuse N", type: "число", default: "0", desc: "Минимальный размер чанка для переиспользования кэша через KV shifting. Требует включения кэширования промптов. Оптимизирует использование кэша.", env: "LLAMA_ARG_CACHE_REUSE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--metrics", type: "флаг", default: "отключено", desc: "Включить Prometheus-совместимый endpoint метрик (/metrics). Позволяет мониторить производительность сервера.", env: "LLAMA_ARG_ENDPOINT_METRICS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--props", type: "флаг", default: "отключено", desc: "Включить изменение глобальных свойств через POST /props. Позволяет динамически изменять настройки сервера.", env: "LLAMA_ARG_ENDPOINT_PROPS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--slots, --no-slots", type: "флаг", default: "включено", desc: "Открыть endpoint мониторинга слотов (/slots). Позволяет отслеживать состояние слотов сервера.", env: "LLAMA_ARG_ENDPOINT_SLOTS", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--slot-save-path PATH", type: "путь", default: "отключено", desc: "Путь для сохранения KV кэша слотов. Позволяет сохранять и восстанавливать состояние слотов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--media-path PATH", type: "путь", default: "отключено", desc: "Директория для загрузки локальных медиафайлов. Файлы могут быть доступны через file:// URL с относительными путями.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--models-dir PATH", type: "путь", default: "отключено", desc: "Директория, содержащая модели для router server. Router server может динамически загружать модели из этой директории.", env: "LLAMA_ARG_MODELS_DIR", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--models-preset PATH", type: "путь", default: "отключено", desc: "Путь к INI файлу, содержащему пресеты моделей для router server. Пресеты определяют, как загружать модели.", env: "LLAMA_ARG_MODELS_PRESET", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--models-max N", type: "число", default: "4", desc: "Для router server: максимальное количество моделей, загружаемых одновременно (0 = без лимита). По умолчанию 4.", env: "LLAMA_ARG_MODELS_MAX", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--models-autoload, --no-models-autoload", type: "флаг", default: "включено", desc: "Для router server: автоматически загружать модели при необходимости. При отключении модели загружаются только по явному запросу.", env: "LLAMA_ARG_MODELS_AUTOLOAD", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "💬 Шаблоны чата и reasoning", collapsed: true,
+          params: [
+            { flag: "--jinja, --no-jinja", type: "флаг", default: "включено", desc: "Использовать шаблонизатор Jinja для форматирования чата. Включение позволяет применять сложные шаблоны сообщений, как в OpenAI API. При отключении используется простой текстовый формат.", env: "LLAMA_ARG_JINJA", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--reasoning-format FORMAT", type: "выбор", default: "auto", desc: "Контролирует, разрешены ли теги мыслей (thought tags) и/или извлекаются ли они из ответа, и в каком формате они возвращаются. none — оставляет мысли непарсированными в message.content. deepseek — помещает мысли в message.reasoning_content. deepseek-legacy — сохраняет теги <think> в message.content, одновременно заполняя message.reasoning_content.", env: "LLAMA_ARG_THINK", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-rea, --reasoning [on|off|auto]", type: "выбор", default: "auto", desc: "Использовать reasoning/thinking в чате. on — всегда использовать. off — никогда не использовать. auto (по умолчанию) — определять из шаблона.", env: "LLAMA_ARG_REASONING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--reasoning-budget N", type: "число", default: "-1", desc: "Бюджет токенов для thinking. -1 — без ограничений. 0 — немедленное окончание thinking. N>0 — бюджет в токенах. Ограничивает количество токенов, которые модель может потратить на размышления.", env: "LLAMA_ARG_THINK_BUDGET", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--reasoning-budget-message MESSAGE", type: "строка", default: "—", desc: "Сообщение, вставляемое перед тегом окончания thinking, когда бюджет исчерпан. Позволяет сообщить модели, что она должна прекратить размышления.", env: "LLAMA_ARG_THINK_BUDGET_MESSAGE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--chat-template JINJA_TEMPLATE", type: "шаблон", default: "из модели", desc: "Установить пользовательский Jinja шаблон чата. По умолчанию используется шаблон из метаданных модели. Если указаны suffix/prefix, шаблон будет отключён. Принимаются только часто используемые шаблоны (если --jinja не установлен до этого флага). Список встроенных шаблонов: bailing, bailing-think, bailing2, chatglm3, chatglm4, chatml, command-r, deepseek, deepseek-ocr, deepseek2, deepseek3, exaone-moe, exaone3, exaone4, falcon3, gemma, gigachat, glmedge, gpt-oss, granite, granite-4.0, granite-4.1, grok-2, hunyuan-dense, hunyuan-moe, hunyuan-vl, kimi-k2, llama2, llama2-sys, llama2-sys-bos, llama2-sys-strip, llama3, llama4, megrez, minicpm, mistral-v1, mistral-v3, mistral-v3-tekken, mistral-v7, mistral-v7-tekken, monarch, openchat, orion, pangu-embedded, phi3, phi4, rwkv-world, seed_oss, smolvlm, solar-open, vicuna, vicuna-orca, yandex, zephyr.", env: "LLAMA_ARG_CHAT_TEMPLATE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--chat-template-file JINJA_TEMPLATE_FILE", type: "файл", default: "из модели", desc: "Установить файл с пользовательским Jinja шаблоном чата. Альтернатива --chat-template для длинных шаблонов.", env: "LLAMA_ARG_CHAT_TEMPLATE_FILE", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--skip-chat-parsing, --no-skip-chat-parsing", type: "флаг", default: "отключено", desc: "Принудительно использовать чистый парсер контента, даже если указан Jinja шаблон. Модель будет выводить всё в секцию content, включая любые reasoning и/или вызовы инструментов.", env: "LLAMA_ARG_SKIP_CHAT_PARSING", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--prefill-assistant, --no-prefill-assistant", type: "флаг", default: "включено", desc: "Заполнять ответ ассистента, если последнее сообщение — сообщение ассистента. При включении этого флага, если последнее сообщение — сообщение ассистента, оно будет рассматриваться как полное сообщение, а не заполняться.", env: "LLAMA_ARG_PREFILL_ASSISTANT", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "-sps, --slot-prompt-similarity SIMILARITY", type: "число", default: "0.10", desc: "Насколько промпт запроса должен совпадать с промптом слота для использования этого слота. Значение 0.0 отключает проверку сходства. По умолчанию 0.10.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--lora-init-without-apply", type: "флаг", default: "отключено", desc: "Загрузить LoRA адаптеры без применения их (применить позже через POST /lora-adapters). Полезно для динамического переключения адаптеров.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--sleep-idle-seconds SECONDS", type: "число", default: "-1", desc: "Количество секунд простоя, после которых сервер перейдёт в режим сна. -1 = отключено. Полезно для экономии ресурсов на серверах с переменной нагрузкой.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🔊 Audio / TTS / Vocoder", collapsed: true,
+          params: [
+            { flag: "-mv, --model-vocoder FNAME", type: "файл", default: "—", desc: "Vocoder модель для генерации аудио. Используется для преобразования аудио-кода в wav. Необходима для TTS (text-to-speech).", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--tts-use-guide-tokens", type: "флаг", default: "—", desc: "Использовать guide токены для улучшения TTS word recall. Улучшает качество генерации речи, направляя модель.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+        { name: "🎯 Специальные модели (preset-флаги)", collapsed: true,
+          params: [
+            { flag: "--embd-gemma-default", type: "preset", default: "—", desc: "Использовать EmbeddingGemma модель по умолчанию. Может скачать веса из интернета. Предназначена для извлечения эмбеддингов.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--fim-qwen-1.5b-default", type: "preset", default: "—", desc: "Использовать Qwen 2.5 Coder 1.5B по умолчанию. Может скачать веса из интернета. Предназначена для Fill-in-the-Middle (FIM) — завершения кода.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--fim-qwen-3b-default", type: "preset", default: "—", desc: "Использовать Qwen 2.5 Coder 3B по умолчанию. Может скачать веса из интернета.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--fim-qwen-7b-default", type: "preset", default: "—", desc: "Использовать Qwen 2.5 Coder 7B по умолчанию. Может скачать веса из интернета.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--fim-qwen-7b-spec", type: "preset", default: "—", desc: "Использовать Qwen 2.5 Coder 7B + 0.5B draft для speculative decoding. Может скачать веса из интернета. Ускоряет генерацию кода через speculative decoding.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--fim-qwen-14b-spec", type: "preset", default: "—", desc: "Использовать Qwen 2.5 Coder 14B + 0.5B draft для speculative decoding. Может скачать веса из интернета.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--fim-qwen-30b-default", type: "preset", default: "—", desc: "Использовать Qwen 3 Coder 30B A3B Instruct по умолчанию. Может скачать веса из интернета. MoE модель с 30B параметрами, 3B активных.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--gpt-oss-20b-default", type: "preset", default: "—", desc: "Использовать gpt-oss-20b. Может скачать веса из интернета.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--gpt-oss-120b-default", type: "preset", default: "—", desc: "Использовать gpt-oss-120b. Может скачать веса из интернета.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--vision-gemma-4b-default", type: "preset", default: "—", desc: "Использовать Gemma 3 4B QAT (Quantization-Aware Training). Может скачать веса из интернета. Vision модель для работы с изображениями.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--vision-gemma-12b-default", type: "preset", default: "—", desc: "Использовать Gemma 3 12B QAT. Может скачать веса из интернета.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+            { flag: "--spec-default", type: "preset", default: "—", desc: "Включить конфигурацию speculative decoding по умолчанию. Автоматически настраивает параметры для оптимальной работы speculative decoding.", env: "", source: "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" },
+          ]},
+    ];
+
+    function buildHTML() {
+        const container = document.getElementById('groups-container');
+        if (!container) return;
+        let html = '';
+        let totalParams = 0;
+        for (let gIdx = 0; gIdx < PARAM_GROUPS.length; gIdx++) {
+            const group = PARAM_GROUPS[gIdx];
+            const collapsedClass = group.collapsed ? 'collapsed' : '';
+            const contentCollapsed = group.collapsed ? 'collapsed' : '';
+            totalParams += group.params.length;
+            html += `<div class="group-card" data-group-idx="${gIdx}">
+                        <div class="group-header ${collapsedClass}" data-group-header="${gIdx}">
+                            <h2>${group.name} <span class="param-count">${group.params.length} параметров</span></h2>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="group-content ${contentCollapsed}" data-group-content="${gIdx}">
+                            <table class="param-table">
+                                <thead><tr><th style="width:25%">Параметр</th><th style="width:10%">Тип</th><th style="width:15%">По умолчанию</th><th style="width:50%">Описание</th></tr></thead>
+                                <tbody>`;
+            for (const p of group.params) {
+                let envHtml = p.env ? `<div class="env-var">env: ${p.env}</div>` : '';
+                let sourceHtml = p.source ? `<div class="source-link"><a href="${p.source}" target="_blank">📖 источник</a></div>` : '';
+                html += `<tr data-group-idx="${gIdx}" data-search-content="${p.flag.toLowerCase()} ${p.type.toLowerCase()} ${p.desc.toLowerCase()} ${p.default.toLowerCase()} ${(p.env || '').toLowerCase()}">
+                            <td class="param-name"><code>${p.flag}</code></td>
+                            <td>${p.type}</td>
+                            <td><span class="default-value">${p.default}</span>${envHtml}${sourceHtml}</td>
+                            <td class="param-desc">${p.desc}</td>
+                          </tr>`;
+            }
+            html += `</tbody></table></div></div>`;
+        }
+        container.innerHTML = html;
+        
+        // Обновляем счётчик
+        document.getElementById('searchCounter').textContent = `Всего параметров: ${totalParams}`;
+        
+        // Добавляем обработчики для заголовков групп
+        for (let i = 0; i < PARAM_GROUPS.length; i++) {
+            const header = document.querySelector(`[data-group-header="${i}"]`);
+            if (header) {
+                header.addEventListener('click', () => {
+                    const content = document.querySelector(`[data-group-content="${i}"]`);
+                    const hdr = document.querySelector(`[data-group-header="${i}"]`);
+                    if (content && hdr) {
+                        const isCollapsed = content.classList.contains('collapsed');
+                        if (isCollapsed) {
+                            content.classList.remove('collapsed');
+                            hdr.classList.remove('collapsed');
+                        } else {
+                            content.classList.add('collapsed');
+                            hdr.classList.add('collapsed');
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function applySearch() {
+        const term = document.getElementById('searchInput').value.trim().toLowerCase();
+        const rows = document.querySelectorAll('.param-table tbody tr');
+        const groupMatches = {};
+        
+        // Сначала проходим по всем строкам и считаем совпадения по группам
+        rows.forEach(row => {
+            const content = row.getAttribute('data-search-content') || '';
+            const groupIdx = row.getAttribute('data-group-idx');
+            if (term === '' || content.includes(term)) {
+                groupMatches[groupIdx] = true;
+            }
+        });
+        
+        // Разворачиваем/сворачиваем группы
+        for (let i = 0; i < PARAM_GROUPS.length; i++) {
+            const content = document.querySelector(`[data-group-content="${i}"]`);
+            const hdr = document.querySelector(`[data-group-header="${i}"]`);
+            if (!content || !hdr) continue;
+            
+            if (term === '') {
+                // Сброс поиска — возвращаем исходное состояние
+                if (PARAM_GROUPS[i].collapsed) {
+                    content.classList.add('collapsed');
+                    hdr.classList.add('collapsed');
+                } else {
+                    content.classList.remove('collapsed');
+                    hdr.classList.remove('collapsed');
+                }
+            } else if (groupMatches[i]) {
+                // Есть совпадения — разворачиваем
+                content.classList.remove('collapsed');
+                hdr.classList.remove('collapsed');
+            } else {
+                // Нет совпадений — сворачиваем
+                content.classList.add('collapsed');
+                hdr.classList.add('collapsed');
+            }
+        }
+        
+        // Теперь показываем/скрываем строки
+        let matchCount = 0;
+        rows.forEach(row => {
+            const content = row.getAttribute('data-search-content') || '';
+            if (term === '' || content.includes(term)) {
+                row.style.display = '';
+                matchCount++;
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    if (term && cell.innerText.toLowerCase().includes(term)) cell.classList.add('highlight');
+                    else cell.classList.remove('highlight');
+                });
+            } else {
+                row.style.display = 'none';
+                row.querySelectorAll('td').forEach(cell => cell.classList.remove('highlight'));
+            }
+        });
+        
+        // Обновляем счётчик
+        const counter = document.getElementById('searchCounter');
+        if (term === '') {
+            let totalParams = 0;
+            PARAM_GROUPS.forEach(g => totalParams += g.params.length);
+            counter.textContent = `Всего параметров: ${totalParams}`;
+        } else {
+            counter.textContent = `Найдено: ${matchCount}`;
+        }
+    }
+
+    function initSearch() {
+        const input = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const expandAllBtn = document.getElementById('expandAllBtn');
+        const collapseAllBtn = document.getElementById('collapseAllBtn');
+        
+        input.addEventListener('input', applySearch);
+        clearBtn.addEventListener('click', () => { 
+            input.value = ''; 
+            applySearch(); 
+        });
+        
+        expandAllBtn.addEventListener('click', () => {
+            for (let i = 0; i < PARAM_GROUPS.length; i++) {
+                const content = document.querySelector(`[data-group-content="${i}"]`);
+                const hdr = document.querySelector(`[data-group-header="${i}"]`);
+                if (content && hdr) {
+                    content.classList.remove('collapsed');
+                    hdr.classList.remove('collapsed');
+                }
+            }
+        });
+        
+        collapseAllBtn.addEventListener('click', () => {
+            for (let i = 0; i < PARAM_GROUPS.length; i++) {
+                const content = document.querySelector(`[data-group-content="${i}"]`);
+                const hdr = document.querySelector(`[data-group-header="${i}"]`);
+                if (content && hdr) {
+                    content.classList.add('collapsed');
+                    hdr.classList.add('collapsed');
+                }
+            }
+        });
+    }
+
+    buildHTML();
+    initSearch();
+    applySearch();
+</script>
+</body>
+</html>
